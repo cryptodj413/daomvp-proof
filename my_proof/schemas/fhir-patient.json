@@ -1,6 +1,6 @@
 {
   "$schema": "http://json-schema.org/draft-07/schema#",
-  "title": "Google Profile FHIR Patient Resource",
+  "title": "Google Profile FHIR Bundle Resource",
   "type": "object",
   "required": [
     "userId",
@@ -8,9 +8,7 @@
     "timestamp",
     "profile",
     "metadata",
-    "fullUrl",
-    "resource",
-    "request"
+    "bundle"
   ],
   "properties": {
     "userId": {
@@ -28,9 +26,7 @@
     },
     "profile": {
       "type": "object",
-      "required": [
-        "name"
-      ],
+      "required": ["name"],
       "properties": {
         "name": {
           "type": "string",
@@ -53,161 +49,83 @@
     },
     "metadata": {
       "type": "object",
-      "required": [
-        "source",
-        "collectionDate",
-        "dataType"
-      ],
+      "required": ["source", "collectionDate", "dataType"],
       "properties": {
-        "source": {
-          "type": "string",
-          "description": "Source of the data"
-        },
-        "collectionDate": {
-          "type": "string",
-          "format": "date-time",
-          "description": "Date when the data was collected"
-        },
-        "dataType": {
-          "type": "string",
-          "description": "Type of data collected"
-        }
+        "source": { "type": "string" },
+        "collectionDate": { "type": "string", "format": "date-time" },
+        "dataType": { "type": "string" }
       }
     },
-    "fullUrl": {
-      "type": "string"
-    },
-    "resource": {
+
+    "bundle": {
       "type": "object",
-      "required": [
-        "resourceType",
-        "id",
-        "gender",
-        "birthDate"
-      ],
+      "required": ["resourceType", "type", "entry"],
       "properties": {
         "resourceType": {
           "type": "string",
-          "enum": [
-            "Patient"
-          ]
+          "enum": ["Bundle"]
         },
-        "id": {
-          "type": "string"
+        "type": {
+          "type": "string",
+          "enum": ["transaction", "batch", "collection", "document", "message"]
         },
+        "entry": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["fullUrl", "resource", "request"],
+            "properties": {
+              "fullUrl": { "type": "string" },
+              "resource": {
+                "type": "object",
+                "properties": {
+                  "resourceType": { "type": "string" }
+                },
+                "oneOf": [
+                  { "$ref": "#/definitions/patient" },
+                  { "$ref": "#/definitions/genericResource" }
+                ]
+              },
+              "request": {
+                "type": "object",
+                "required": ["method", "url"],
+                "properties": {
+                  "method": { "type": "string", "enum": ["POST", "PUT", "DELETE"] },
+                  "url": { "type": "string" }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+
+  "definitions": {
+    "patient": {
+      "type": "object",
+      "required": ["resourceType", "id", "gender", "birthDate"],
+      "properties": {
+        "resourceType": { "type": "string", "enum": ["Patient"] },
+        "id": { "type": "string" },
         "text": {
           "type": "object",
           "properties": {
-            "status": {
-              "type": "string"
-            },
-            "div": {
-              "type": "string"
-            }
+            "status": { "type": "string" },
+            "div": { "type": "string" }
           }
         },
         "extension": {
           "type": "array",
-          "items": {
-            "type": "object",
-            "properties": {
-              "url": {
-                "type": "string"
-              },
-              "valueCodeableConcept": {
-                "type": "object",
-                "properties": {
-                  "coding": {
-                    "type": "array",
-                    "items": {
-                      "type": "object",
-                      "properties": {
-                        "system": {
-                          "type": "string"
-                        },
-                        "code": {
-                          "type": "string"
-                        },
-                        "display": {
-                          "type": "string"
-                        }
-                      },
-                      "required": [
-                        "system",
-                        "code"
-                      ]
-                    }
-                  },
-                  "text": {
-                    "type": "string"
-                  }
-                },
-                "required": [
-                  "coding"
-                ]
-              },
-              "valueString": {
-                "type": "string"
-              },
-              "valueCode": {
-                "type": "string"
-              },
-              "valueDecimal": {
-                "type": "number"
-              },
-              "valueAddress": {
-                "type": "object",
-                "properties": {
-                  "city": {
-                    "type": "string"
-                  },
-                  "state": {
-                    "type": "string"
-                  },
-                  "country": {
-                    "type": "string"
-                  }
-                },
-                "required": [
-                  "city",
-                  "state",
-                  "country"
-                ]
-              },
-              "extension": {
-                "type": "array",
-                "items": {
-                  "type": "object",
-                  "properties": {
-                    "url": {
-                      "type": "string"
-                    },
-                    "valueDecimal": {
-                      "type": "number"
-                    }
-                  },
-                  "required": [
-                    "url"
-                  ]
-                }
-              }
-            },
-            "required": [
-              "url"
-            ]
-          }
+          "items": { "type": "object" }
         },
         "identifier": {
           "type": "array",
           "items": {
             "type": "object",
             "properties": {
-              "system": {
-                "type": "string"
-              },
-              "value": {
-                "type": "string"
-              },
+              "system": { "type": "string" },
+              "value": { "type": "string" },
               "type": {
                 "type": "object",
                 "properties": {
@@ -216,26 +134,17 @@
                     "items": {
                       "type": "object",
                       "properties": {
-                        "system": {
-                          "type": "string"
-                        },
-                        "code": {
-                          "type": "string"
-                        }
-                      },
-                      "required": [
-                        "system",
-                        "code"
-                      ]
+                        "system": { "type": "string" },
+                        "code": { "type": "string" },
+                        "display": { "type": "string" }
+                      }
                     }
-                  }
+                  },
+                  "text": { "type": "string" }
                 }
               }
             },
-            "required": [
-              "system",
-              "value"
-            ]
+            "required": ["system", "value"]
           }
         },
         "name": {
@@ -243,26 +152,15 @@
           "items": {
             "type": "object",
             "properties": {
-              "use": {
-                "type": "string"
-              },
-              "family": {
-                "type": "array",
-                "items": {
-                  "type": "string"
-                }
-              },
+              "use": { "type": "string" },
+              "family": { "type": "string" },
               "given": {
                 "type": "array",
-                "items": {
-                  "type": "string"
-                }
+                "items": { "type": "string" }
               },
               "prefix": {
                 "type": "array",
-                "items": {
-                  "type": "string"
-                }
+                "items": { "type": "string" }
               }
             }
           }
@@ -272,51 +170,28 @@
           "items": {
             "type": "object",
             "properties": {
-              "system": {
-                "type": "string"
-              },
-              "value": {
-                "type": "string"
-              },
-              "use": {
-                "type": "string"
-              }
+              "system": { "type": "string" },
+              "value": { "type": "string" },
+              "use": { "type": "string" }
             }
           }
         },
-        "gender": {
-          "type": "string"
-        },
-        "birthDate": {
-          "type": "string",
-          "format": "date"
-        },
-        "deceasedDateTime": {
-          "type": "string",
-          "format": "date-time"
-        },
+        "gender": { "type": "string" },
+        "birthDate": { "type": "string", "format": "date" },
+        "deceasedDateTime": { "type": "string", "format": "date-time" },
         "address": {
           "type": "array",
           "items": {
             "type": "object",
             "properties": {
-              "line": {
+              "line": { "type": "array", "items": { "type": "string" } },
+              "city": { "type": "string" },
+              "state": { "type": "string" },
+              "postalCode": { "type": "string" },
+              "country": { "type": "string" },
+              "extension": {
                 "type": "array",
-                "items": {
-                  "type": "string"
-                }
-              },
-              "city": {
-                "type": "string"
-              },
-              "state": {
-                "type": "string"
-              },
-              "postalCode": {
-                "type": "string"
-              },
-              "country": {
-                "type": "string"
+                "items": { "type": "object" }
               }
             }
           }
@@ -329,20 +204,16 @@
               "items": {
                 "type": "object",
                 "properties": {
-                  "system": {
-                    "type": "string"
-                  },
-                  "code": {
-                    "type": "string"
-                  }
+                  "system": { "type": "string" },
+                  "code": { "type": "string" },
+                  "display": { "type": "string" }
                 }
               }
-            }
+            },
+            "text": { "type": "string" }
           }
         },
-        "multipleBirthBoolean": {
-          "type": "boolean"
-        },
+        "multipleBirthBoolean": { "type": "boolean" },
         "communication": {
           "type": "array",
           "items": {
@@ -356,21 +227,13 @@
                     "items": {
                       "type": "object",
                       "properties": {
-                        "system": {
-                          "type": "string"
-                        },
-                        "code": {
-                          "type": "string"
-                        },
-                        "display": {
-                          "type": "string"
-                        }
+                        "system": { "type": "string" },
+                        "code": { "type": "string" },
+                        "display": { "type": "string" }
                       }
                     }
                   },
-                  "text": {
-                    "type": "string"
-                  }
+                  "text": { "type": "string" }
                 }
               }
             }
@@ -378,25 +241,14 @@
         }
       }
     },
-    "request": {
+
+    "genericResource": {
       "type": "object",
-      "required": [
-        "method",
-        "url"
-      ],
+      "required": ["resourceType"],
       "properties": {
-        "method": {
-          "type": "string",
-          "enum": [
-            "POST",
-            "PUT",
-            "DELETE"
-          ]
-        },
-        "url": {
-          "type": "string"
-        }
-      }
+        "resourceType": { "type": "string" }
+      },
+      "additionalProperties": true
     }
   }
 }

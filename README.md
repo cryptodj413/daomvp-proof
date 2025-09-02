@@ -25,7 +25,7 @@ This template provides a basic structure for building proof tasks that:
     "score_threshold": 0.83,
     "email_verified": true
   }
-}
+} 
 ```
 
 The project is designed to work with [Gramine](https://gramine.readthedocs.io/en/latest/), a lightweight library OS that enables running unmodified applications in secure enclaves, such as Intel SGX (Software Guard Extensions). This allows the code to run in a trusted execution environment, ensuring confidentiality and integrity of the computation.
