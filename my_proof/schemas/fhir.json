@@ -1,25 +1,15 @@
 {
   "$schema": "http://json-schema.org/draft-07/schema#",
-  "title": "Google Profile + Strict FHIR R4 EMR Bundle",
+  "title": "Google Profile + FHIR R4 EMR Bundle Proof",
   "type": "object",
-  "required": ["userId", "email", "timestamp", "profile", "metadata", "bundle"],
+  "required": ["userId", "email", "timestamp", "profile", "metadata", "entry"],
   "properties": {
-    "userId": {
-      "type": "string",
-      "description": "Google user identifier"
-    },
-    "email": {
-      "type": "string",
-      "format": "email",
-      "description": "User's email address"
-    },
-    "timestamp": {
-      "type": "number",
-      "description": "Timestamp of the data collection in milliseconds"
-    },
+    "userId": { "type": "string" },
+    "email": { "type": "string", "format": "email" },
+    "timestamp": { "type": "number" },
     "profile": {
       "type": "object",
-      "required": ["name"],
+      "required": ["name", "locale"],
       "properties": {
         "name": { "type": "string" },
         "locale": { "type": "string" }
@@ -40,44 +30,37 @@
         "dataType": { "type": "string" }
       }
     },
-    "bundle": {
-      "type": "object",
-      "required": ["resourceType", "type", "entry"],
-      "properties": {
-        "resourceType": { "type": "string", "enum": ["Bundle"] },
-        "type": { "type": "string", "enum": ["transaction"] },
-        "entry": {
-          "type": "array",
-          "items": {
+    "entry": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["fullUrl", "resource", "request"],
+        "properties": {
+          "fullUrl": { "type": "string" },
+          "resource": {
             "type": "object",
-            "required": ["fullUrl", "resource", "request"],
+            "oneOf": [
+              { "$ref": "#/definitions/patient" },
+              { "$ref": "#/definitions/encounter" },
+              { "$ref": "#/definitions/condition" },
+              { "$ref": "#/definitions/procedure" },
+              { "$ref": "#/definitions/immunization" },
+              { "$ref": "#/definitions/diagnosticReport" },
+              { "$ref": "#/definitions/device" },
+              { "$ref": "#/definitions/supplyDelivery" },
+              { "$ref": "#/definitions/explanationOfBenefit" },
+              { "$ref": "#/definitions/medication" },
+              { "$ref": "#/definitions/medicationRequest" },
+              { "$ref": "#/definitions/claim" },
+              { "$ref": "#/definitions/documentReference" }
+            ]
+          },
+          "request": {
+            "type": "object",
+            "required": ["method", "url"],
             "properties": {
-              "fullUrl": { "type": "string" },
-              "resource": {
-                "type": "object",
-                "oneOf": [
-                  { "$ref": "#/definitions/patient" },
-                  { "$ref": "#/definitions/encounter" },
-                  { "$ref": "#/definitions/immunization" },
-                  { "$ref": "#/definitions/diagnosticReport" },
-                  { "$ref": "#/definitions/procedure" },
-                  { "$ref": "#/definitions/device" },
-                  { "$ref": "#/definitions/supplyDelivery" },
-                  { "$ref": "#/definitions/explanationOfBenefit" },
-                  { "$ref": "#/definitions/medication" },
-                  { "$ref": "#/definitions/medicationRequest" },
-                  { "$ref": "#/definitions/claim" },
-                  { "$ref": "#/definitions/documentReference" }
-                ]
-              },
-              "request": {
-                "type": "object",
-                "required": ["method", "url"],
-                "properties": {
-                  "method": { "type": "string", "enum": ["POST"] },
-                  "url": { "type": "string" }
-                }
-              }
+              "method": { "type": "string", "enum": ["POST"] },
+              "url": { "type": "string" }
             }
           }
         }
@@ -92,77 +75,16 @@
       "properties": {
         "resourceType": { "type": "string", "enum": ["Patient"] },
         "id": { "type": "string" },
-        "meta": {
-          "type": "object",
-          "properties": {
-            "profile": {
-              "type": "array",
-              "items": { "type": "string" }
-            }
-          }
-        },
-        "text": {
-          "type": "object",
-          "properties": {
-            "status": { "type": "string" },
-            "div": { "type": "string" }
-          }
-        },
-        "extension": {
-          "type": "array",
-          "items": { "type": "object" }
-        },
-        "identifier": {
-          "type": "array",
-          "items": { "type": "object" }
-        },
-        "name": {
-          "type": "array",
-          "items": {
-            "type": "object",
-            "properties": {
-              "use": { "type": "string" },
-              "family": {
-                "oneOf": [
-                  { "type": "string" },
-                  {
-                    "type": "array",
-                    "items": { "type": "string" }
-                  }
-                ]
-              },
-              "given": {
-                "type": "array",
-                "items": { "type": "string" }
-              },
-              "prefix": {
-                "type": "array",
-                "items": { "type": "string" }
-              }
-            }
-          }
-        },
-        "telecom": {
-          "type": "array",
-          "items": { "type": "object" }
-        },
         "gender": { "type": "string" },
-        "birthDate": {
-          "type": "string",
-          "pattern": "^\\d{4}-\\d{2}-\\d{2}$"
-        },
-        "deceasedDateTime": { "type": "string", "format": "date-time" },
-        "address": {
-          "type": "array",
-          "items": { "type": "object" }
-        },
+        "birthDate": { "type": "string", "pattern": "^\\d{4}-\\d{2}-\\d{2}$" },
+        "name": { "type": "array", "items": { "type": "object" } },
+        "identifier": { "type": "array", "items": { "type": "object" } },
+        "telecom": { "type": "array", "items": { "type": "object" } },
+        "address": { "type": "array", "items": { "type": "object" } },
         "maritalStatus": { "type": "object" },
-        "multipleBirthBoolean": { "type": "boolean" },
-        "communication": {
-          "type": "array",
-          "items": { "type": "object" }
-        }
-      }
+        "communication": { "type": "array", "items": { "type": "object" } }
+      },
+      "additionalProperties": true
     },
 
     "encounter": {
@@ -173,186 +95,110 @@
         "id": { "type": "string" },
         "status": { "type": "string" },
         "class": { "type": "object" },
-        "type": {
-          "type": "array",
-          "items": { "type": "object" }
-        },
         "subject": { "type": "object" },
-        "participant": {
-          "type": "array",
-          "items": { "type": "object" }
-        },
-        "period": { "type": "object" },
-        "reasonCode": {
-          "type": "array",
-          "items": { "type": "object" }
-        }
-      }
+        "period": { "type": "object" }
+      },
+      "additionalProperties": true
     },
 
-    "immunization": {
+    "condition": {
       "type": "object",
-      "required": [
-        "resourceType",
-        "status",
-        "vaccineCode",
-        "patient",
-        "encounter",
-        "occurrenceDateTime"
-      ],
+      "required": ["resourceType", "id", "subject", "code"],
       "properties": {
-        "resourceType": { "type": "string", "enum": ["Immunization"] },
+        "resourceType": { "type": "string", "enum": ["Condition"] },
         "id": { "type": "string" },
-        "status": { "type": "string" },
-        "vaccineCode": { "type": "object" },
-        "patient": { "type": "object" },
-        "encounter": { "type": "object" },
-        "occurrenceDateTime": { "type": "string", "format": "date-time" },
-        "location": { "type": "object" }
-      }
-    },
-
-    "diagnosticReport": {
-      "type": "object",
-      "required": [
-        "resourceType",
-        "status",
-        "code",
-        "subject",
-        "effectiveDateTime"
-      ],
-      "properties": {
-        "resourceType": { "type": "string", "enum": ["DiagnosticReport"] },
-        "id": { "type": "string" },
-        "status": { "type": "string" },
+        "subject": { "type": "object" },
         "code": { "type": "object" },
-        "subject": { "type": "object" },
-        "effectiveDateTime": { "type": "string", "format": "date-time" },
-        "issued": { "type": "string", "format": "date-time" },
-        "result": {
-          "type": "array",
-          "items": { "type": "object" }
-        }
-      }
+        "onsetDateTime": { "type": "string", "format": "date-time" }
+      },
+      "additionalProperties": true
     },
 
     "procedure": {
       "type": "object",
-      "required": [
-        "resourceType",
-        "status",
-        "code",
-        "subject",
-        "encounter",
-        "performedPeriod"
-      ],
+      "required": ["resourceType", "status", "code", "subject"],
       "properties": {
         "resourceType": { "type": "string", "enum": ["Procedure"] },
         "id": { "type": "string" },
         "status": { "type": "string" },
         "code": { "type": "object" },
-        "subject": { "type": "object" },
-        "encounter": { "type": "object" },
-        "performedPeriod": { "type": "object" },
-        "location": { "type": "object" }
-      }
+        "subject": { "type": "object" }
+      },
+      "additionalProperties": true
+    },
+
+    "immunization": {
+      "type": "object",
+      "required": ["resourceType", "status", "vaccineCode", "patient"],
+      "properties": {
+        "resourceType": { "type": "string", "enum": ["Immunization"] },
+        "id": { "type": "string" },
+        "status": { "type": "string" },
+        "vaccineCode": { "type": "object" },
+        "patient": { "type": "object" }
+      },
+      "additionalProperties": true
+    },
+
+    "diagnosticReport": {
+      "type": "object",
+      "required": ["resourceType", "status", "code", "subject"],
+      "properties": {
+        "resourceType": { "type": "string", "enum": ["DiagnosticReport"] },
+        "id": { "type": "string" },
+        "status": { "type": "string" },
+        "code": { "type": "object" },
+        "subject": { "type": "object" }
+      },
+      "additionalProperties": true
     },
 
     "device": {
       "type": "object",
-      "required": ["resourceType", "status", "serialNumber", "type", "patient"],
+      "required": ["resourceType", "id", "status", "type"],
       "properties": {
         "resourceType": { "type": "string", "enum": ["Device"] },
         "id": { "type": "string" },
         "status": { "type": "string" },
-        "udiCarrier": {
-          "type": "array",
-          "items": { "type": "object" }
-        },
-        "serialNumber": { "type": "string" },
-        "deviceName": {
-          "type": "array",
-          "items": { "type": "object" }
-        },
-        "type": { "type": "object" },
-        "patient": { "type": "object" }
-      }
+        "type": { "type": "object" }
+      },
+      "additionalProperties": true
     },
 
     "supplyDelivery": {
       "type": "object",
-      "required": [
-        "resourceType",
-        "status",
-        "patient",
-        "type",
-        "occurrenceDateTime"
-      ],
+      "required": ["resourceType", "status", "patient"],
       "properties": {
         "resourceType": { "type": "string", "enum": ["SupplyDelivery"] },
         "id": { "type": "string" },
         "status": { "type": "string" },
-        "patient": { "type": "object" },
-        "type": { "type": "object" },
-        "suppliedItem": {
-          "type": "array",
-          "items": { "type": "object" }
-        },
-        "occurrenceDateTime": { "type": "string", "format": "date-time" }
-      }
+        "patient": { "type": "object" }
+      },
+      "additionalProperties": true
     },
 
     "explanationOfBenefit": {
       "type": "object",
-      "required": [
-        "resourceType",
-        "status",
-        "type",
-        "use",
-        "patient",
-        "billablePeriod",
-        "created",
-        "insurer",
-        "provider"
-      ],
+      "required": ["resourceType", "status", "type", "patient"],
       "properties": {
-        "resourceType": {
-          "type": "string",
-          "enum": ["ExplanationOfBenefit"]
-        },
+        "resourceType": { "type": "string", "enum": ["ExplanationOfBenefit"] },
         "id": { "type": "string" },
         "status": { "type": "string" },
         "type": { "type": "object" },
-        "use": { "type": "string" },
-        "patient": { "type": "object" },
-        "billablePeriod": { "type": "object" },
-        "created": { "type": "string", "format": "date-time" },
-        "insurer": { "type": "object" },
-        "provider": { "type": "object" },
-        "insurance": {
-          "type": "array",
-          "items": { "type": "object" }
-        },
-        "item": {
-          "type": "array",
-          "items": { "type": "object" }
-        },
-        "total": {
-          "type": "array",
-          "items": { "type": "object" }
-        }
-      }
+        "patient": { "type": "object" }
+      },
+      "additionalProperties": true
     },
 
     "medication": {
       "type": "object",
-      "required": ["resourceType", "status", "code"],
+      "required": ["resourceType", "code"],
       "properties": {
         "resourceType": { "type": "string", "enum": ["Medication"] },
         "id": { "type": "string" },
-        "status": { "type": "string" },
         "code": { "type": "object" }
-      }
+      },
+      "additionalProperties": true
     },
 
     "medicationRequest": {
@@ -363,21 +209,22 @@
         "id": { "type": "string" },
         "status": { "type": "string" },
         "intent": { "type": "string" },
-        "medicationReference": { "type": "object" },
-        "subject": { "type": "object" },
-        "authoredOn": { "type": "string", "format": "date-time" }
-      }
+        "subject": { "type": "object" }
+      },
+      "additionalProperties": true
     },
 
     "claim": {
       "type": "object",
-      "required": ["resourceType", "status", "type"],
+      "required": ["resourceType", "status", "type", "patient"],
       "properties": {
         "resourceType": { "type": "string", "enum": ["Claim"] },
         "id": { "type": "string" },
         "status": { "type": "string" },
-        "type": { "type": "object" }
-      }
+        "type": { "type": "object" },
+        "patient": { "type": "object" }
+      },
+      "additionalProperties": true
     },
 
     "documentReference": {
@@ -387,12 +234,9 @@
         "resourceType": { "type": "string", "enum": ["DocumentReference"] },
         "id": { "type": "string" },
         "status": { "type": "string" },
-        "type": { "type": "object" },
-        "content": {
-          "type": "array",
-          "items": { "type": "object" }
-        }
-      }
+        "content": { "type": "array", "items": { "type": "object" } }
+      },
+      "additionalProperties": true
     }
   }
 }
