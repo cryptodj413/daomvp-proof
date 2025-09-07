@@ -81,7 +81,10 @@
         ]
       },
       "type": {
-        "type": "string"
+        "type": "string",
+        "enum": [
+          "transaction"
+        ]
       },
       "entry": {
         "type": "array",
@@ -95,308 +98,368 @@
           ],
           "properties": {
             "fullUrl": {
-              "type": "string"
+              "type": "string",
+              "format": "uri"
             },
             "resource": {
-              "type": "object",
-              "required": [
-                "resourceType",
-                "id",
-                "gender",
-                "birthDate"
-              ],
-              "properties": {
-                "resourceType": {
-                  "type": "string",
-                  "enum": [
-                    "Patient"
-                  ]
-                },
-                "id": {
-                  "type": "string"
-                },
-                "text": {
+              "oneOf": [
+                {
                   "type": "object",
+                  "required": [
+                    "resourceType",
+                    "id",
+                    "gender",
+                    "birthDate"
+                  ],
                   "properties": {
-                    "status": {
+                    "resourceType": {
+                      "type": "string",
+                      "enum": [
+                        "Patient"
+                      ]
+                    },
+                    "id": {
                       "type": "string"
                     },
-                    "div": {
-                      "type": "string"
-                    }
-                  }
-                },
-                "extension": {
-                  "type": "array",
-                  "items": {
-                    "type": "object",
-                    "properties": {
-                      "url": {
-                        "type": "string"
-                      },
-                      "valueCodeableConcept": {
+                    "text": {
+                      "type": "object",
+                      "properties": {
+                        "status": {
+                          "type": "string"
+                        },
+                        "div": {
+                          "type": "string"
+                        }
+                      }
+                    },
+                    "extension": {
+                      "type": "array",
+                      "items": {
                         "type": "object",
+                        "required": [
+                          "url"
+                        ],
                         "properties": {
-                          "coding": {
+                          "url": {
+                            "type": "string"
+                          },
+                          "valueCodeableConcept": {
+                            "type": "object",
+                            "required": [
+                              "coding"
+                            ],
+                            "properties": {
+                              "coding": {
+                                "type": "array",
+                                "items": {
+                                  "type": "object",
+                                  "required": [
+                                    "system",
+                                    "code"
+                                  ],
+                                  "properties": {
+                                    "system": {
+                                      "type": "string"
+                                    },
+                                    "code": {
+                                      "type": "string"
+                                    },
+                                    "display": {
+                                      "type": "string"
+                                    }
+                                  }
+                                }
+                              },
+                              "text": {
+                                "type": "string"
+                              }
+                            }
+                          },
+                          "valueString": {
+                            "type": "string"
+                          },
+                          "valueCode": {
+                            "type": "string"
+                          },
+                          "valueDecimal": {
+                            "type": "number"
+                          },
+                          "valueAddress": {
+                            "type": "object",
+                            "required": [
+                              "city",
+                              "state",
+                              "country"
+                            ],
+                            "properties": {
+                              "city": {
+                                "type": "string"
+                              },
+                              "state": {
+                                "type": "string"
+                              },
+                              "country": {
+                                "type": "string"
+                              }
+                            }
+                          },
+                          "extension": {
                             "type": "array",
                             "items": {
                               "type": "object",
-                              "properties": {
-                                "system": {
-                                  "type": "string"
-                                },
-                                "code": {
-                                  "type": "string"
-                                },
-                                "display": {
-                                  "type": "string"
-                                }
-                              },
                               "required": [
-                                "system",
-                                "code"
-                              ]
+                                "url"
+                              ],
+                              "properties": {
+                                "url": {
+                                  "type": "string"
+                                },
+                                "valueDecimal": {
+                                  "type": "number"
+                                }
+                              }
                             }
-                          },
-                          "text": {
-                            "type": "string"
                           }
-                        },
+                        }
+                      }
+                    },
+                    "identifier": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
                         "required": [
-                          "coding"
-                        ]
-                      },
-                      "valueString": {
-                        "type": "string"
-                      },
-                      "valueCode": {
-                        "type": "string"
-                      },
-                      "valueDecimal": {
-                        "type": "number"
-                      },
-                      "valueAddress": {
+                          "system",
+                          "value"
+                        ],
+                        "properties": {
+                          "system": {
+                            "type": "string"
+                          },
+                          "value": {
+                            "type": "string"
+                          },
+                          "type": {
+                            "type": "object",
+                            "properties": {
+                              "coding": {
+                                "type": "array",
+                                "items": {
+                                  "type": "object",
+                                  "required": [
+                                    "system",
+                                    "code"
+                                  ],
+                                  "properties": {
+                                    "system": {
+                                      "type": "string"
+                                    },
+                                    "code": {
+                                      "type": "string"
+                                    }
+                                  }
+                                }
+                              }
+                            }
+                          }
+                        }
+                      }
+                    },
+                    "name": {
+                      "type": "array",
+                      "items": {
                         "type": "object",
                         "properties": {
+                          "use": {
+                            "type": "string"
+                          },
+                          "family": {
+                            "type": "string"
+                          },
+                          "given": {
+                            "type": "array",
+                            "items": {
+                              "type": "string"
+                            }
+                          },
+                          "prefix": {
+                            "type": "array",
+                            "items": {
+                              "type": "string"
+                            }
+                          }
+                        }
+                      }
+                    },
+                    "telecom": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "system": {
+                            "type": "string",
+                            "enum": [
+                              "phone",
+                              "fax",
+                              "email",
+                              "pager",
+                              "url",
+                              "sms",
+                              "other"
+                            ]
+                          },
+                          "value": {
+                            "type": "string"
+                          },
+                          "use": {
+                            "type": "string"
+                          }
+                        }
+                      }
+                    },
+                    "gender": {
+                      "type": "string",
+                      "enum": [
+                        "male",
+                        "female",
+                        "other",
+                        "unknown"
+                      ]
+                    },
+                    "birthDate": {
+                      "type": "string",
+                      "format": "date"
+                    },
+                    "deceasedDateTime": {
+                      "type": "string",
+                      "format": "date-time"
+                    },
+                    "address": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "line": {
+                            "type": "array",
+                            "items": {
+                              "type": "string"
+                            }
+                          },
                           "city": {
                             "type": "string"
                           },
                           "state": {
                             "type": "string"
                           },
+                          "postalCode": {
+                            "type": "string"
+                          },
                           "country": {
                             "type": "string"
                           }
-                        },
-                        "required": [
-                          "city",
-                          "state",
-                          "country"
-                        ]
-                      },
-                      "extension": {
-                        "type": "array",
-                        "items": {
-                          "type": "object",
-                          "properties": {
-                            "url": {
-                              "type": "string"
-                            },
-                            "valueDecimal": {
-                              "type": "number"
-                            }
-                          },
-                          "required": [
-                            "url"
-                          ]
                         }
                       }
                     },
-                    "required": [
-                      "url"
-                    ]
-                  }
-                },
-                "identifier": {
-                  "type": "array",
-                  "items": {
-                    "type": "object",
-                    "properties": {
-                      "system": {
-                        "type": "string"
-                      },
-                      "value": {
-                        "type": "string"
-                      },
-                      "type": {
-                        "type": "object",
-                        "properties": {
-                          "coding": {
-                            "type": "array",
-                            "items": {
-                              "type": "object",
-                              "properties": {
-                                "system": {
-                                  "type": "string"
-                                },
-                                "code": {
-                                  "type": "string"
-                                }
+                    "maritalStatus": {
+                      "type": "object",
+                      "properties": {
+                        "coding": {
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "system": {
+                                "type": "string"
                               },
-                              "required": [
-                                "system",
-                                "code"
-                              ]
+                              "code": {
+                                "type": "string"
+                              }
                             }
                           }
                         }
                       }
                     },
-                    "required": [
-                      "system",
-                      "value"
-                    ]
-                  }
-                },
-                "name": {
-                  "type": "array",
-                  "items": {
-                    "type": "object",
-                    "properties": {
-                      "use": {
-                        "type": "string"
-                      },
-                      "family": {
-                        "type": "array",
-                        "items": {
-                          "type": "string"
-                        }
-                      },
-                      "given": {
-                        "type": "array",
-                        "items": {
-                          "type": "string"
-                        }
-                      },
-                      "prefix": {
-                        "type": "array",
-                        "items": {
-                          "type": "string"
-                        }
-                      }
-                    }
-                  }
-                },
-                "telecom": {
-                  "type": "array",
-                  "items": {
-                    "type": "object",
-                    "properties": {
-                      "system": {
-                        "type": "string"
-                      },
-                      "value": {
-                        "type": "string"
-                      },
-                      "use": {
-                        "type": "string"
-                      }
-                    }
-                  }
-                },
-                "gender": {
-                  "type": "string"
-                },
-                "birthDate": {
-                  "type": "string",
-                  "format": "date"
-                },
-                "deceasedDateTime": {
-                  "type": "string",
-                  "format": "date-time"
-                },
-                "address": {
-                  "type": "array",
-                  "items": {
-                    "type": "object",
-                    "properties": {
-                      "line": {
-                        "type": "array",
-                        "items": {
-                          "type": "string"
-                        }
-                      },
-                      "city": {
-                        "type": "string"
-                      },
-                      "state": {
-                        "type": "string"
-                      },
-                      "postalCode": {
-                        "type": "string"
-                      },
-                      "country": {
-                        "type": "string"
-                      }
-                    }
-                  }
-                },
-                "maritalStatus": {
-                  "type": "object",
-                  "properties": {
-                    "coding": {
+                    "multipleBirthBoolean": {
+                      "type": "boolean"
+                    },
+                    "communication": {
                       "type": "array",
                       "items": {
                         "type": "object",
                         "properties": {
-                          "system": {
-                            "type": "string"
-                          },
-                          "code": {
-                            "type": "string"
-                          }
-                        }
-                      }
-                    }
-                  }
-                },
-                "multipleBirthBoolean": {
-                  "type": "boolean"
-                },
-                "communication": {
-                  "type": "array",
-                  "items": {
-                    "type": "object",
-                    "properties": {
-                      "language": {
-                        "type": "object",
-                        "properties": {
-                          "coding": {
-                            "type": "array",
-                            "items": {
-                              "type": "object",
-                              "properties": {
-                                "system": {
-                                  "type": "string"
-                                },
-                                "code": {
-                                  "type": "string"
-                                },
-                                "display": {
-                                  "type": "string"
+                          "language": {
+                            "type": "object",
+                            "properties": {
+                              "coding": {
+                                "type": "array",
+                                "items": {
+                                  "type": "object",
+                                  "properties": {
+                                    "system": {
+                                      "type": "string"
+                                    },
+                                    "code": {
+                                      "type": "string"
+                                    },
+                                    "display": {
+                                      "type": "string"
+                                    }
+                                  }
                                 }
+                              },
+                              "text": {
+                                "type": "string"
                               }
                             }
-                          },
-                          "text": {
-                            "type": "string"
                           }
                         }
                       }
                     }
                   }
+                },
+                {
+                  "type": "object",
+                  "required": [
+                    "resourceType",
+                    "id"
+                  ],
+                  "properties": {
+                    "resourceType": {
+                      "type": "string",
+                      "enum": [
+                        "Provenance",
+                        "Encounter",
+                        "Observation",
+                        "Condition",
+                        "Procedure",
+                        "MedicationStatement",
+                        "MedicationRequest",
+                        "AllergyIntolerance",
+                        "Immunization",
+                        "DiagnosticReport",
+                        "CarePlan",
+                        "Device",
+                        "Location",
+                        "Organization",
+                        "Practitioner",
+                        "PractitionerRole",
+                        "Coverage",
+                        "DocumentReference",
+                        "Goal",
+                        "ServiceRequest",
+                        "CareTeam",
+                        "Appointment",
+                        "EpisodeOfCare",
+                        "ImagingStudy",
+                        "Task"
+                      ]
+                    },
+                    "id": {
+                      "type": "string"
+                    }
+                  },
+                  "additionalProperties": true
                 }
-              }
+              ]
             },
             "request": {
               "type": "object",
@@ -414,7 +477,9 @@
                   ]
                 },
                 "url": {
-                  "type": "string"
+                  "type": "string",
+                  "description": "Relative FHIR REST path (e.g., 'Patient' or 'Patient/123', optionally with query)",
+                  "pattern": "^[A-Za-z]+(?:\\/[A-Za-z0-9\\-\\.]{1,64})?(?:\\?[^\\s]*)?$"
                 }
               }
             }
