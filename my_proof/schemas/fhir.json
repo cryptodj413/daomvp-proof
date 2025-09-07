@@ -90,34 +90,7 @@
             "type": "object",
             "properties": {
               "resourceType": {
-                "type": "string",
-                "enum": [
-                  "Patient",
-                  "Practitioner",
-                  "PractitionerRole",
-                  "Organization",
-                  "Location",
-                  "Device",
-                  "Medication",
-                  "Observation",
-                  "Condition",
-                  "Procedure",
-                  "Encounter",
-                  "DocumentReference",
-                  "DiagnosticReport",
-                  "Claim",
-                  "ExplanationOfBenefit",
-                  "Immunization",
-                  "SupplyDelivery",
-                  "ImagingStudy",
-                  "MedicationRequest",
-                  "MedicationDispense",
-                  "MedicationStatement",
-                  "MedicationAdministration",
-                  "MedicationUsage",
-                  "MedicationReconciliation",
-                  "MedicationPrescription"
-                ]
+                "type": "string"
               },
               "id": {
                 "type": "string"
