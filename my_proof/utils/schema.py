@@ -19,7 +19,7 @@ def validate_schema(input_data: Dict[str, Any]) -> Tuple[str, bool]:
     """
     try:
         # schema_type = 'google-profile.json'
-        schema_type = 'fhir-patient.json'
+        schema_type = 'fhir.json'
         
         # Load the schema
         schema_path = os.path.join(os.path.dirname(__file__), '..', 'schemas', schema_type)

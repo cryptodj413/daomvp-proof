@@ -1,0 +1,425 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "title": "FHIR Transaction Bundle (multiple EMR entries)",
+    "type": "object",
+    "required": [
+      "userId",
+      "email",
+      "timestamp",
+      "profile",
+      "metadata",
+      "resourceType",
+      "type",
+      "entry"
+    ],
+    "properties": {
+      "userId": {
+        "type": "string",
+        "description": "Google user identifier"
+      },
+      "email": {
+        "type": "string",
+        "format": "email",
+        "description": "User's email address"
+      },
+      "timestamp": {
+        "type": "number",
+        "description": "Timestamp of the data collection in milliseconds"
+      },
+      "profile": {
+        "type": "object",
+        "required": [
+          "name"
+        ],
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "User's display name"
+          },
+          "locale": {
+            "type": "string",
+            "description": "User's locale setting"
+          }
+        }
+      },
+      "storage": {
+        "type": "object",
+        "properties": {
+          "percentUsed": {
+            "type": "number",
+            "description": "Percentage of storage used"
+          }
+        }
+      },
+      "metadata": {
+        "type": "object",
+        "required": [
+          "source",
+          "collectionDate",
+          "dataType"
+        ],
+        "properties": {
+          "source": {
+            "type": "string",
+            "description": "Source of the data"
+          },
+          "collectionDate": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Date when the data was collected"
+          },
+          "dataType": {
+            "type": "string",
+            "description": "Type of data collected"
+          }
+        }
+      },
+      "resourceType": {
+        "type": "string",
+        "enum": [
+          "Bundle"
+        ]
+      },
+      "type": {
+        "type": "string"
+      },
+      "entry": {
+        "type": "array",
+        "minItems": 1,
+        "items": {
+          "type": "object",
+          "required": [
+            "fullUrl",
+            "resource",
+            "request"
+          ],
+          "properties": {
+            "fullUrl": {
+              "type": "string"
+            },
+            "resource": {
+              "type": "object",
+              "required": [
+                "resourceType",
+                "id",
+                "gender",
+                "birthDate"
+              ],
+              "properties": {
+                "resourceType": {
+                  "type": "string",
+                  "enum": [
+                    "Patient"
+                  ]
+                },
+                "id": {
+                  "type": "string"
+                },
+                "text": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string"
+                    },
+                    "div": {
+                      "type": "string"
+                    }
+                  }
+                },
+                "extension": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "url": {
+                        "type": "string"
+                      },
+                      "valueCodeableConcept": {
+                        "type": "object",
+                        "properties": {
+                          "coding": {
+                            "type": "array",
+                            "items": {
+                              "type": "object",
+                              "properties": {
+                                "system": {
+                                  "type": "string"
+                                },
+                                "code": {
+                                  "type": "string"
+                                },
+                                "display": {
+                                  "type": "string"
+                                }
+                              },
+                              "required": [
+                                "system",
+                                "code"
+                              ]
+                            }
+                          },
+                          "text": {
+                            "type": "string"
+                          }
+                        },
+                        "required": [
+                          "coding"
+                        ]
+                      },
+                      "valueString": {
+                        "type": "string"
+                      },
+                      "valueCode": {
+                        "type": "string"
+                      },
+                      "valueDecimal": {
+                        "type": "number"
+                      },
+                      "valueAddress": {
+                        "type": "object",
+                        "properties": {
+                          "city": {
+                            "type": "string"
+                          },
+                          "state": {
+                            "type": "string"
+                          },
+                          "country": {
+                            "type": "string"
+                          }
+                        },
+                        "required": [
+                          "city",
+                          "state",
+                          "country"
+                        ]
+                      },
+                      "extension": {
+                        "type": "array",
+                        "items": {
+                          "type": "object",
+                          "properties": {
+                            "url": {
+                              "type": "string"
+                            },
+                            "valueDecimal": {
+                              "type": "number"
+                            }
+                          },
+                          "required": [
+                            "url"
+                          ]
+                        }
+                      }
+                    },
+                    "required": [
+                      "url"
+                    ]
+                  }
+                },
+                "identifier": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "system": {
+                        "type": "string"
+                      },
+                      "value": {
+                        "type": "string"
+                      },
+                      "type": {
+                        "type": "object",
+                        "properties": {
+                          "coding": {
+                            "type": "array",
+                            "items": {
+                              "type": "object",
+                              "properties": {
+                                "system": {
+                                  "type": "string"
+                                },
+                                "code": {
+                                  "type": "string"
+                                }
+                              },
+                              "required": [
+                                "system",
+                                "code"
+                              ]
+                            }
+                          }
+                        }
+                      }
+                    },
+                    "required": [
+                      "system",
+                      "value"
+                    ]
+                  }
+                },
+                "name": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "use": {
+                        "type": "string"
+                      },
+                      "family": {
+                        "type": "array",
+                        "items": {
+                          "type": "string"
+                        }
+                      },
+                      "given": {
+                        "type": "array",
+                        "items": {
+                          "type": "string"
+                        }
+                      },
+                      "prefix": {
+                        "type": "array",
+                        "items": {
+                          "type": "string"
+                        }
+                      }
+                    }
+                  }
+                },
+                "telecom": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "system": {
+                        "type": "string"
+                      },
+                      "value": {
+                        "type": "string"
+                      },
+                      "use": {
+                        "type": "string"
+                      }
+                    }
+                  }
+                },
+                "gender": {
+                  "type": "string"
+                },
+                "birthDate": {
+                  "type": "string",
+                  "format": "date"
+                },
+                "deceasedDateTime": {
+                  "type": "string",
+                  "format": "date-time"
+                },
+                "address": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "line": {
+                        "type": "array",
+                        "items": {
+                          "type": "string"
+                        }
+                      },
+                      "city": {
+                        "type": "string"
+                      },
+                      "state": {
+                        "type": "string"
+                      },
+                      "postalCode": {
+                        "type": "string"
+                      },
+                      "country": {
+                        "type": "string"
+                      }
+                    }
+                  }
+                },
+                "maritalStatus": {
+                  "type": "object",
+                  "properties": {
+                    "coding": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "system": {
+                            "type": "string"
+                          },
+                          "code": {
+                            "type": "string"
+                          }
+                        }
+                      }
+                    }
+                  }
+                },
+                "multipleBirthBoolean": {
+                  "type": "boolean"
+                },
+                "communication": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "language": {
+                        "type": "object",
+                        "properties": {
+                          "coding": {
+                            "type": "array",
+                            "items": {
+                              "type": "object",
+                              "properties": {
+                                "system": {
+                                  "type": "string"
+                                },
+                                "code": {
+                                  "type": "string"
+                                },
+                                "display": {
+                                  "type": "string"
+                                }
+                              }
+                            }
+                          },
+                          "text": {
+                            "type": "string"
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            },
+            "request": {
+              "type": "object",
+              "required": [
+                "method",
+                "url"
+              ],
+              "properties": {
+                "method": {
+                  "type": "string",
+                  "enum": [
+                    "POST",
+                    "PUT",
+                    "DELETE"
+                  ]
+                },
+                "url": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
