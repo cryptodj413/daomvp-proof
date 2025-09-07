@@ -104,10 +104,7 @@
               ],
               "properties": {
                 "resourceType": {
-                  "type": "string",
-                  "enum": [
-                    "Patient"
-                  ]
+                  "type": "string"
                 },
                 "id": {
                   "type": "string"
@@ -264,10 +261,14 @@
                         "type": "string"
                       },
                       "family": {
-                        "type": "array",
-                        "items": {
-                          "type": "string"
-                        }
+                        "oneOf": [
+                          { "type": "string" },
+                          {
+                            "type": "array",
+                            "items": { "type": "string" },
+                            "minItems": 1
+                          }
+                        ]
                       },
                       "given": {
                         "type": "array",
